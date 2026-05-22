@@ -9,6 +9,16 @@ public class DiceScore {
     }
 
     public int getScore() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        int scoreFirst = de.getRoll();
+        int scoreSecond = de.getRoll();
+
+        if (scoreFirst == scoreSecond) {
+            if (scoreFirst == 6) {
+                return 30;
+            }
+            return scoreFirst * 2 + 10;
+        } else {
+            return scoreFirst < scoreSecond ? scoreSecond : scoreFirst;
+        }
     }
 }
