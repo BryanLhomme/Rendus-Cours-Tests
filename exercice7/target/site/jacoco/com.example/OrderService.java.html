@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice7</a> &gt; <a href="index.source.html" class="el_package">com.example</a> &gt; <span class="el_source">OrderService.java</span></div><h1>OrderService.java</h1><pre class="source lang-java linenums">package com.example;
+
+public class OrderService {
+    private final ProductRepository productRepository;
+
+<span class="fc" id="L6">    public OrderService(ProductRepository productRepository) {</span>
+<span class="fc" id="L7">        this.productRepository = productRepository;</span>
+<span class="fc" id="L8">    }</span>
+
+    public OrderReceipt placeOrder(Order order, ClientType clientType) {
+<span class="fc bfc" id="L11" title="All 2 branches covered.">        if (!productRepository.exists(order.getProductReference())) {</span>
+<span class="fc" id="L12">            throw new IllegalArgumentException(&quot;Produit introuvable : &quot; + order.getProductReference());</span>
+        }
+
+<span class="fc" id="L15">        Product product = productRepository.findByReference(order.getProductReference());</span>
+
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (order.getQuantity() &gt; product.getStock()) {</span>
+<span class="fc" id="L18">            throw new IllegalStateException(&quot;Stock insuffisant pour le produit &quot; + order.getProductReference());</span>
+        }
+
+<span class="fc" id="L21">        double total = product.getUnitPrice() * order.getQuantity();</span>
+<span class="fc" id="L22">        double totalAfterDiscount = total * (1 - clientType.getDiscountRate() / 100.0);</span>
+
+<span class="fc" id="L24">        return new OrderReceipt(</span>
+<span class="fc" id="L25">                order.getProductReference(),</span>
+<span class="fc" id="L26">                order.getQuantity(),</span>
+                totalAfterDiscount,
+                &quot;Commande confirmée&quot;
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

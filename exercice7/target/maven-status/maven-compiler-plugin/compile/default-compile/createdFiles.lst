@@ -1,0 +1,6 @@
+com\example\OrderReceipt.class
+com\example\ClientType.class
+com\example\OrderService.class
+com\example\ProductRepository.class
+com\example\Order.class
+com\example\Product.class
