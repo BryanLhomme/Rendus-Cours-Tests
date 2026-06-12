@@ -1,0 +1,6 @@
+com\example\UserService.class
+com\example\ProductService.class
+com\example\UserRepository.class
+com\example\ProductRepository.class
+com\example\User.class
+com\example\Product.class
