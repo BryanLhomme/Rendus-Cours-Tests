@@ -82,10 +82,31 @@
                 </configuration>
             </plugin>
 
+            <!--
+                Plugin JaCoCo : génère un rapport de couverture de code.
+
+                prepare-agent :
+                ajoute l'agent JaCoCo avant l'exécution des tests pour mesurer
+                quelles lignes/classes/méthodes sont exécutées.
+
+                Deux rapports sont générés :
+                1. target/site/jacoco/index.html   — utilisé par le workflow CI/CD.
+                2. jacoco-report/index.html         — commité dans le dépôt Git.
+
+                Commande : mvn clean verify
+            -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+
+                <!--
+                    Exclusions JaCoCo :
+                    Classes sans logique métier exclues du rapport de couverture.
+                    On n'exclut pas parce qu'elles sont difficiles à tester,
+                    mais parce qu'elles ne contiennent pas de logique à mesurer :
+                    DTO (records), classe main Spring Boot, exceptions simples, config Cucumber.
+                -->
                 <configuration>
                     <excludes>
                         <exclude>com/example/Exercice13Application.class</exclude>
@@ -99,18 +120,34 @@
                         <exclude>com/example/bdd/RunCucumberTest.class</exclude>
                     </excludes>
                 </configuration>
+
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
+                    <!-- Rapport CI/CD : archivé par le workflow GitHub Actions. -->
                     <execution>
-                        <id>jacoco-report</id>
+                        <id>jacoco-report-ci</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                    </execution>
+
+                    <!-- Rapport Git : commité dans le dépôt pour consultation directe. -->
+                    <execution>
+                        <id>jacoco-report-git</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/jacoco-report</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice13</a> &gt; <a href="index.source.html" class="el_package">com.example.controller</a> &gt; <span class="el_source">AccountController.java</span></div><h1>AccountController.java</h1><pre class="source lang-java linenums">package com.example.controller;
+
+import com.example.dto.AccountResponse;
+import com.example.dto.AmountRequest;
+import com.example.dto.CreateAccountRequest;
+import com.example.dto.TransferRequest;
+import com.example.service.AccountService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
+import java.util.List;
+
+/**
+ * Couche web REST — API de gestion des comptes bancaires.
+ *
+ * @RestController indique que les méthodes renvoient directement des réponses HTTP/JSON.
+ * @RequestMapping définit le préfixe commun des URLs de ce contrôleur.
+ */
+@RestController
+@RequestMapping(&quot;/api/accounts&quot;)
+public class AccountController {
+
+    private final AccountService service;
+
+<span class="fc" id="L32">    public AccountController(AccountService service) {</span>
+<span class="fc" id="L33">        this.service = service;</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * POST /api/accounts
+     * Crée un nouveau compte bancaire.
+     *
+     * @Valid déclenche la validation des annotations présentes dans CreateAccountRequest.
+     * Retourne 201 Created avec l'URL du compte dans le header Location.
+     */
+    @PostMapping
+    public ResponseEntity&lt;AccountResponse&gt; create(@Valid @RequestBody CreateAccountRequest request) {
+<span class="fc" id="L45">        var account = service.create(request.number(), request.holder());</span>
+<span class="fc" id="L46">        var response = AccountResponse.from(account);</span>
+
+<span class="fc" id="L48">        return ResponseEntity</span>
+<span class="fc" id="L49">                .created(URI.create(&quot;/api/accounts/&quot; + response.number()))</span>
+<span class="fc" id="L50">                .body(response);</span>
+    }
+
+    /**
+     * GET /api/accounts
+     * Retourne la liste de tous les comptes.
+     */
+    @GetMapping
+    public ResponseEntity&lt;List&lt;AccountResponse&gt;&gt; findAll() {
+<span class="nc" id="L59">        var responses = service.findAll()</span>
+<span class="nc" id="L60">                .stream()</span>
+<span class="nc" id="L61">                .map(AccountResponse::from)</span>
+<span class="nc" id="L62">                .toList();</span>
+
+<span class="nc" id="L64">        return ResponseEntity.ok(responses);</span>
+    }
+
+    /**
+     * GET /api/accounts/{number}
+     * Retourne un compte par son numéro. Retourne 404 s'il est introuvable.
+     *
+     * @PathVariable récupère la valeur dynamique présente dans l'URL.
+     */
+    @GetMapping(&quot;/{number}&quot;)
+    public ResponseEntity&lt;AccountResponse&gt; getByNumber(@PathVariable String number) {
+<span class="fc" id="L75">        var account = service.getByNumber(number);</span>
+<span class="fc" id="L76">        return ResponseEntity.ok(AccountResponse.from(account));</span>
+    }
+
+    /**
+     * POST /api/accounts/{number}/deposit
+     * Effectue un dépôt sur un compte. Le montant doit être strictement positif.
+     */
+    @PostMapping(&quot;/{number}/deposit&quot;)
+    public ResponseEntity&lt;AccountResponse&gt; deposit(
+            @PathVariable String number,
+            @Valid @RequestBody AmountRequest request) {
+<span class="fc" id="L87">        var account = service.deposit(number, request.amount());</span>
+<span class="fc" id="L88">        return ResponseEntity.ok(AccountResponse.from(account));</span>
+    }
+
+    /**
+     * POST /api/accounts/{number}/withdraw
+     * Effectue un retrait sur un compte. Retourne 409 si le solde est insuffisant.
+     */
+    @PostMapping(&quot;/{number}/withdraw&quot;)
+    public ResponseEntity&lt;AccountResponse&gt; withdraw(
+            @PathVariable String number,
+            @Valid @RequestBody AmountRequest request) {
+<span class="fc" id="L99">        var account = service.withdraw(number, request.amount());</span>
+<span class="fc" id="L100">        return ResponseEntity.ok(AccountResponse.from(account));</span>
+    }
+
+    /**
+     * POST /api/accounts/transfer
+     * Effectue un virement entre deux comptes. Retourne 409 si le solde est insuffisant.
+     */
+    @PostMapping(&quot;/transfer&quot;)
+    public ResponseEntity&lt;Void&gt; transfer(@Valid @RequestBody TransferRequest request) {
+<span class="fc" id="L109">        service.transfer(request.fromNumber(), request.toNumber(), request.amount());</span>
+<span class="fc" id="L110">        return ResponseEntity.ok().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

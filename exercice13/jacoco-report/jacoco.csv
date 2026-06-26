@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+exercice13,com.example.exception,ApiExceptionHandler,32,30,2,0,6,7,3,4,2,4
+exercice13,com.example.controller,AccountController,11,68,0,0,5,16,1,6,1,6
+exercice13,com.example.service,AccountService,0,145,1,9,0,32,1,13,0,9
+exercice13,com.example.repository,InMemoryAccountRepository,7,33,0,0,1,8,1,5,1,5
