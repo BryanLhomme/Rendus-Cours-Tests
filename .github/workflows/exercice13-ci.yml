@@ -1,0 +1,69 @@
+name: Exercice 13 — API Bancaire CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'exercice13/**'
+
+  pull_request:
+    branches:
+      - main
+      - master
+    paths:
+      - 'exercice13/**'
+
+  workflow_dispatch:
+
+jobs:
+  test-and-reports:
+    name: Exécuter les tests et publier les rapports
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Java 21 avec cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Vérifier Java et Maven
+        run: |
+          java -version
+          mvn -version
+
+      - name: Lancer les tests et générer les rapports
+        run: mvn clean verify
+        working-directory: exercice13
+
+      - name: Publier les rapports de tests Maven
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-tests-maven
+          path: exercice13/target/surefire-reports/**
+          if-no-files-found: warn
+
+      - name: Publier le rapport de couverture JaCoCo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-jacoco
+          path: exercice13/target/site/jacoco/**
+          if-no-files-found: warn
+
+      - name: Publier les rapports Cucumber BDD
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-cucumber-bdd
+          path: |
+            exercice13/cucumber-report/index.html
+            exercice13/cucumber-report/cucumber.json
+          if-no-files-found: warn
