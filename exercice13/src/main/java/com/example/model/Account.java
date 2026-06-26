@@ -11,7 +11,7 @@ public class Account {
     public Account(String number, String holder) {
         this.number = number;
         this.holder = holder;
-        this.balance = BigDecimal.ZERO;
+        this.balance = new BigDecimal("0.00");
     }
 
     public String getNumber() {

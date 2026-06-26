@@ -51,7 +51,7 @@ class AccountServiceTest {
         // Assert
         assertEquals("FR001", result.getNumber());
         assertEquals("Alice Martin", result.getHolder());
-        assertEquals(BigDecimal.ZERO, result.getBalance());
+        assertEquals(0, result.getBalance().compareTo(BigDecimal.ZERO));
         verify(repository).save(any(Account.class));
     }
 
