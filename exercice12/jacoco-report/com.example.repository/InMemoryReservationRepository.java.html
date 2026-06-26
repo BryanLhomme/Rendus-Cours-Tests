@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InMemoryReservationRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice12</a> &gt; <a href="index.source.html" class="el_package">com.example.repository</a> &gt; <span class="el_source">InMemoryReservationRepository.java</span></div><h1>InMemoryReservationRepository.java</h1><pre class="source lang-java linenums">package com.example.repository;
+
+import com.example.model.Reservation;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Repository
+<span class="fc" id="L14">public class InMemoryReservationRepository implements ReservationRepository {</span>
+
+<span class="fc" id="L16">    private final Map&lt;Long, Reservation&gt; store = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L17">    private final AtomicLong idGenerator = new AtomicLong(1);</span>
+
+    @Override
+    public Reservation save(Reservation reservation) {
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if (reservation.getId() == null) {</span>
+<span class="fc" id="L22">            reservation.setId(idGenerator.getAndIncrement());</span>
+        }
+<span class="fc" id="L24">        store.put(reservation.getId(), reservation);</span>
+<span class="fc" id="L25">        return reservation;</span>
+    }
+
+    @Override
+    public Optional&lt;Reservation&gt; findById(Long id) {
+<span class="fc" id="L30">        return Optional.ofNullable(store.get(id));</span>
+    }
+
+    @Override
+    public List&lt;Reservation&gt; findAll() {
+<span class="nc" id="L35">        return new ArrayList&lt;&gt;(store.values());</span>
+    }
+
+    @Override
+    public List&lt;Reservation&gt; findByRoomId(Long roomId) {
+<span class="fc" id="L40">        List&lt;Reservation&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (Reservation reservation : store.values()) {</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">            if (reservation.getRoomId().equals(roomId)) {</span>
+<span class="fc" id="L43">                result.add(reservation);</span>
+            }
+<span class="fc" id="L45">        }</span>
+<span class="fc" id="L46">        return result;</span>
+    }
+
+    @Override
+    public void deleteAll() {
+<span class="fc" id="L51">        store.clear();</span>
+<span class="fc" id="L52">        idGenerator.set(1);</span>
+<span class="fc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

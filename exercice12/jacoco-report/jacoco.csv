@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+exercice12,com.example.exception,ApiExceptionHandler,2,69,1,1,0,15,1,7,0,7
+exercice12,com.example.controller,RoomController,0,35,0,0,0,12,0,3,0,3
+exercice12,com.example.controller,ReservationController,0,45,0,0,0,15,0,4,0,4
+exercice12,com.example.service,RoomService,0,21,0,0,0,6,0,3,0,3
+exercice12,com.example.service,ReservationService,2,119,4,10,1,22,4,10,0,7
+exercice12,com.example.repository,InMemoryRoomRepository,7,47,1,1,1,11,2,4,1,4
+exercice12,com.example.repository,InMemoryReservationRepository,7,75,2,4,1,17,3,6,1,5
